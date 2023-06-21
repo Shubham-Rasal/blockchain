@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Shubham-Rasal/merkel"
+	"github.com/Shubham-Rasal/blockchain/merkel"
 )
 
 
