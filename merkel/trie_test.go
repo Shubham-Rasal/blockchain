@@ -33,12 +33,17 @@ func TestSearch(t *testing.T) {
 		IsLeaf:   false,
 	}
 	merkel.InsertWord("he", &root)	
+	merkel.InsertWord("water", &root)
 
 	if !merkel.SearchWord("he", &root) {
 		t.Error("Search failed")
 	}
 
 	if merkel.SearchWord("hello", &root) {
+		t.Error("Search failed")
+	}
+
+	if !merkel.SearchWord("water", &root) {
 		t.Error("Search failed")
 	}
 

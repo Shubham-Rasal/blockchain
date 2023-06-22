@@ -18,7 +18,7 @@ func Receive() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"hello", // name
+		"transactions", // name
 		false,   // durable
 		false,   // delete when unused
 		false,   // exclusive
