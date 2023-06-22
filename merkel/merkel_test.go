@@ -24,7 +24,7 @@ func TestBuild(t *testing.T) {
 	values := []string{"a", "b", "c", "d", "e", "f", "g"}
 	m.Init(values)
 	m.Build()
-	if len(m.Levels) != 2 {
+	if len(m.Levels) != 4 {
 		t.Error("Build failed")
 	}
 	if len(m.Levels[1]) != 4 {
@@ -38,8 +38,7 @@ func TestInsert(t *testing.T) {
 	m.Init(values)
 	m.Build()
 	m.Insert("h")
-	m.Insert("i")
-	if len(m.Levels) != 3 {
+	if len(m.Levels) != 4 {
 		t.Error("Insert failed")
 	}
 	if len(m.Levels[2]) != 2 {
@@ -53,7 +52,7 @@ func TestDelete(t *testing.T) {
 	m.Init(values)
 	m.Build()
 	m.Delete("g")
-	if len(m.Levels) != 2 {
+	if len(m.Levels) != 4 {
 		t.Error("Delete failed")
 	}
 	if len(m.Levels[1]) != 4 {

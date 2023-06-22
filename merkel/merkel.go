@@ -1,5 +1,7 @@
 package merkel
 
+import "fmt"
+
 //Merkel Tree functions
 // set of functions to create a merkel tree
 // 1. insert
@@ -53,9 +55,16 @@ func (m *MerkelTree) Build() {
 	// create new nodes from the previous level
 	prevLevelLen := len(m.Levels[m.LevelCount-1])
 
+	if prevLevelLen == 1 {
+		return
+	}
+
 	//if odd number of nodes, duplicate the last node
 	if prevLevelLen%2 != 0 {
-		m.Levels[m.LevelCount-1] = append(m.Levels[m.LevelCount-1], m.Levels[m.LevelCount-1][prevLevelLen-1])
+		prevNode := m.Levels[m.LevelCount-1][prevLevelLen-1]
+		fmt.Println(prevNode.hash)
+		m.Levels[m.LevelCount-1] = append(m.Levels[m.LevelCount-1], prevNode)
+		fmt.Println(m.Levels)
 		prevLevelLen++
 	}
 
@@ -77,6 +86,9 @@ func (m *MerkelTree) Build() {
 	// increment the level count
 	m.LevelCount++
 
+	//call build recursively until the length of the last level is 1
+	m.Build()
+
 }
 
 func (m *MerkelTree) Insert(val string) bool {
@@ -86,17 +98,19 @@ func (m *MerkelTree) Insert(val string) bool {
 
 	// insert the value into the base level
 	//check if the last node is a duplicate
-	prevLevelLen := len(m.Levels[m.LevelCount-1])
-	lastNode := m.Levels[m.LevelCount-1][prevLevelLen-1]
-	secondlastNode := m.Levels[m.LevelCount-1][prevLevelLen-2]
-
-	if lastNode.hash == secondlastNode.hash {
-		m.Levels[m.LevelCount-1][prevLevelLen-1].hash = val
+	baseLevelLen := len(m.Levels[0])
+	last := m.Levels[0][baseLevelLen-1]
+	secondLast := m.Levels[0][baseLevelLen-2]
+	if last.hash == secondLast.hash {
+		m.Levels[0][baseLevelLen-1].hash = val
 	} else {
-
 		m.Levels[0] = append(m.Levels[0], MerkelNode{hash: val})
-
 	}
+
+	//clear the levels except the base level
+	m.Levels = m.Levels[:1]
+	m.LevelCount = 1
+
 	// build the merkel tree
 	m.Build()
 
