@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 
 	"time"
+	"encoding/hex"
 )
 
 type Transaction struct {
@@ -27,5 +28,25 @@ type Account struct {
 	Balance    int
 	PrivateKey *ecdsa.PrivateKey
 	PublicKey  ecdsa.PublicKey
-	Address    string
+	Address    Address
+}
+
+type Hash [32]byte
+
+type Address [20]byte
+
+func (a Address) Hex() []byte {
+	var buf [len(a)*2 + 2]byte
+	copy(buf[:2], "0x")
+	hex.Encode(buf[2:], a[:])
+	return buf[:]
+}
+
+// SetBytes sets the address to the value of b.
+// If b is larger than len(a), b will be cropped from the left.
+func (a *Address) SetBytes(b []byte) {
+	if len(b) > len(a) {
+		b = b[len(b)-AddressLength:]
+	}
+	copy(a[AddressLength-len(b):], b)
 }

@@ -35,6 +35,11 @@ func (m *MerkelTree) Init(values []string) bool {
 		baseLevel = append(baseLevel, MerkelNode{hash: val})
 	}
 
+	//duplicate the last node if odd number of nodes
+	if len(baseLevel)%2 != 0 {
+		baseLevel = append(baseLevel, baseLevel[len(baseLevel)-1])
+	}
+
 	m.Levels = append(m.Levels, baseLevel)
 	m.LevelCount++
 	return true
@@ -143,13 +148,33 @@ func (m *MerkelTree) Delete(key string) bool {
 	// 3. if not found, return false
 
 	// lookup the value in the base level
-	for i, node := range m.Levels[0] {
+	for i := len(m.Levels[0]) - 1; i >= 0; i-- {
+		node := m.Levels[0][i]
 		if node.hash == key {
-			// delete the value
-			m.Levels[0] = append(m.Levels[0][:i], m.Levels[0][i+1:]...)
+			// delete the value from the base level
+			//if the node is the last node, delete the node and the previous node
+			if i == len(m.Levels[0])-1 {
+				fmt.Println("last node")
+				m.Levels[0] = m.Levels[0][:i-1]
+			} else {
+				m.Levels[0] = append(m.Levels[0][:i], m.Levels[0][i+1:]...)
+			}
+
+			//check if tree is empty
+			if len(m.Levels[0]) == 0 {
+				m.LevelCount = 0
+				m.Levels = nil
+				return true
+			}
+
+			//clear the levels except the base level
+			m.Levels = m.Levels[:1]
+			m.LevelCount = 1
 
 			// build the merkel tree
 			m.Build()
+
+
 			return true
 		}
 	}

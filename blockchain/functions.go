@@ -4,14 +4,26 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
-	"math"
-	"time"
 	"encoding/hex"
-	"golang.org/x/crypto/sha3"
-	_rand "math/rand"
 	"fmt"
-
+	"golang.org/x/crypto/sha3"
+	"math"
+	_rand "math/rand"
+	"time"
 )
+
+const (
+	HashLength    = 32
+	AddressLength = 20
+)
+
+func (h *Hash) SetBytes(b []byte) {
+	if len(b) > len(h) {
+		b = b[len(b)-HashLength:]
+	}
+
+	copy(h[HashLength-len(b):], b)
+}
 
 func CreateAccount() Account {
 
@@ -43,8 +55,11 @@ func CreateAccount() Account {
 	hasher.Write(elliptic.Marshal(elliptic.P256(), account.PublicKey.X, account.PublicKey.Y))
 
 	//hex encoding is used to convert the hash into a string
-	account.Address = "0x" + hex.EncodeToString(hasher.Sum(nil)[12:])
-	fmt.Println("Account Address : ", account.Address)
+	fmt.Println(hasher.Sum(nil))
+	hash := hasher.Sum(nil)
+	//take the last 20 bytes of the hash
+	account.Address.SetBytes(hash)
+	fmt.Println(account.Address.Hex())
 
 	return account
 
@@ -85,9 +100,6 @@ func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) Transac
 }
 
 // func VerifyTransaction(transaction Transaction) bool {
-
-	
-
 
 func HashBlock(block Block) string {
 	//hash the block using the sha3-256 algorithm
