@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	// "time"
 	// "github.com/gofrs/uuid"
 	// blockchain "github.com/Shubham-Rasal/blockchain"
@@ -18,6 +19,11 @@ func TidyPrint(data interface{}) {
 		fmt.Println(err)
 	}
 	fmt.Println(string(res))
+}
+
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	
 }
 
 
@@ -43,5 +49,9 @@ func main() {
 	//conver 546 to hex
 	fmt.Println(len("0x6088B06c5a187058434655B71057a9ee93E13d0d"))
 	fmt.Println(len(account.Address))
+
+	http.HandleFunc("/ping" , handler)
+	fmt.Println("Server started at port 8080")
+	http.ListenAndServe(":8080", nil)
 // 
 }
