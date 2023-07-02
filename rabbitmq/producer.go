@@ -38,7 +38,7 @@ func Send() {
 
 	for i := 0; i < 10; i++ {
 
-		body := "Hello World!" + string(i)
+		body := "Hello World!" + string(rune(i))
 		time.Sleep(1 * time.Second)
 		err = ch.PublishWithContext(ctx,
 			"",     //exchange

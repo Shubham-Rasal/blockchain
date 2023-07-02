@@ -14,7 +14,7 @@ type Transaction struct {
 	Amount          int
 	TimeStamp       time.Time
 	Nonce           int
-	Signature       string
+	Signature       Signature
 }
 
 type Block struct {

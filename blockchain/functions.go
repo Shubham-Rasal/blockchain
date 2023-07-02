@@ -1,15 +1,18 @@
 package blockchain
 
 import (
+	// eth_crypto "github.com/ethereum/go-ethereum/crypto"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"golang.org/x/crypto/sha3"
 	"math"
+	"math/big"
 	_rand "math/rand"
 	"time"
+
+	"golang.org/x/crypto/sha3"
 )
 
 const (
@@ -17,6 +20,7 @@ const (
 	AddressLength = 20
 )
 
+//trims the hash to 32 bytes
 func (h *Hash) SetBytes(b []byte) {
 	if len(b) > len(h) {
 		b = b[len(b)-HashLength:]
@@ -55,15 +59,21 @@ func CreateAccount() Account {
 	hasher.Write(elliptic.Marshal(elliptic.P256(), account.PublicKey.X, account.PublicKey.Y))
 
 	//hex encoding is used to convert the hash into a string
-	fmt.Println(hasher.Sum(nil))
+	// fmt.Println(hasher.Sum(nil))
 	hash := hasher.Sum(nil)
 	//take the last 20 bytes of the hash
 	account.Address.SetBytes(hash)
-	fmt.Println(account.Address.Hex())
+	fmt.Println(string(account.Address.Hex()))
 
 	return account
 
 }
+
+type Signature struct {
+	r *big.Int
+	s *big.Int
+	v int
+} 
 
 func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) Transaction {
 
@@ -77,7 +87,6 @@ func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) Transac
 	transaction.Nonce = _rand.Intn(math.MaxInt64)
 	//generate a transaction hash
 	hasher := sha3.New256()
-	hasher.Write([]byte(transaction.From))
 	hasher.Write([]byte(transaction.Recipient))
 	hasher.Write([]byte(string(rune(transaction.Amount))))
 	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
@@ -91,15 +100,46 @@ func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) Transac
 
 	//the signature is a pair of numbers (r,s) which are the coordinates of the point on the curve
 	//the signature is encoded as a string
-	transaction.Signature = hex.EncodeToString(r.Bytes()) + hex.EncodeToString(s.Bytes()) + "fd"
-
-	res := ecdsa.Verify(&account.PublicKey, []byte(transaction.TransactionHash), r, s)
-	fmt.Println("Transaction Verified : ", res)
+	//v is the recovery id which is used to recover the public key from the signature
+	transaction.Signature = Signature{r: r, s: s, v: 0}	
 
 	return transaction
 }
 
-// func VerifyTransaction(transaction Transaction) bool {
+func VerifyTransaction(transaction Transaction) bool {
+
+	//derive the public key from the signature
+	//the public key is a point on the curve
+	//the public key is derived from the signature using the recovery id
+	//the recovery id is used to determine the sign of the public key
+	hasher := sha3.New256()
+	hasher.Write([]byte(transaction.Recipient))
+	hasher.Write([]byte(string(rune(transaction.Amount))))
+	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
+	hasher.Write([]byte(string(rune(transaction.Nonce))))
+
+	hash := hex.EncodeToString(hasher.Sum(nil))
+
+	if hash != transaction.TransactionHash {
+		return false
+	}
+
+	// Sign creates a recoverable ECDSA signature.
+// The produced signature is in the 65-byte [R || S || V] format where V is 0 or 1.
+
+
+	// signingPublicKey := eth_crypto.SigToPub()
+
+	
+
+
+	
+
+	return true
+}
+	
+
+
 
 func HashBlock(block Block) string {
 	//hash the block using the sha3-256 algorithm
