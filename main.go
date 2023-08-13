@@ -36,7 +36,7 @@ func main() {
 
 	//verify the transaction
 
-	res := blockchain.VerifyTransaction(transaction)
+	res := transactions.VerifyTransaction(transaction)
 
 	fmt.Print(res)
 
