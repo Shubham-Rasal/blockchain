@@ -78,7 +78,7 @@ type Signature struct {
 func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) Transaction {
 
 	var transaction Transaction
-	// transaction.From = account.PublicKey
+	transaction.From = account.PublicKey
 	transaction.Recipient = to
 	transaction.Amount = amount
 	//store unix time in the transaction
@@ -91,7 +91,7 @@ func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) Transac
 	hasher.Write([]byte(string(rune(transaction.Amount))))
 	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
 	hasher.Write([]byte(string(rune(transaction.Nonce))))
-	transaction.TransactionHash = hex.EncodeToString(hasher.Sum(nil))
+	transaction.TransactionHash = hasher.Sum(nil)
 	//sign the transaction hash using the private key
 	r, s, err := ecdsa.Sign(rand.Reader, account, []byte(transaction.TransactionHash))
 	if err != nil {
@@ -118,24 +118,22 @@ func VerifyTransaction(transaction Transaction) bool {
 	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
 	hasher.Write([]byte(string(rune(transaction.Nonce))))
 
-	hash := hex.EncodeToString(hasher.Sum(nil))
+	hash := hasher.Sum(nil)
 
-	if hash != transaction.TransactionHash {
+	//compare the hash of the transaction with the hash derived from the signature
+	if hex.EncodeToString(hash) != hex.EncodeToString(transaction.TransactionHash) {
 		return false
 	}
 
 	// Sign creates a recoverable ECDSA signature.
-// The produced signature is in the 65-byte [R || S || V] format where V is 0 or 1.
+	// The produced signature is in the 65-byte [R || S || V] format where V is 0 or 1.
+	//TODO: for now the from field is there in the transaction itself
+	//later it will be derived from the signature
+	publicKey := transaction.From
 
+	sign := ecdsa.Verify(&publicKey, []byte(transaction.TransactionHash), transaction.Signature.r, transaction.Signature.s)
 
-	// signingPublicKey := eth_crypto.SigToPub()
-
-	
-
-
-	
-
-	return true
+	return sign
 }
 	
 

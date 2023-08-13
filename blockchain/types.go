@@ -8,8 +8,8 @@ import (
 )
 
 type Transaction struct {
-	TransactionHash string
-	From            string
+	TransactionHash []byte
+	From            ecdsa.PublicKey
 	Recipient       string
 	Amount          int
 	TimeStamp       time.Time
