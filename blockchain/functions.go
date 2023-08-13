@@ -7,10 +7,9 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"math"
-	"math/big"
-	_rand "math/rand"
-	"time"
+	// "math"	
+	// _rand "math/rand"
+	// "time"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -20,14 +19,6 @@ const (
 	AddressLength = 20
 )
 
-//trims the hash to 32 bytes
-func (h *Hash) SetBytes(b []byte) {
-	if len(b) > len(h) {
-		b = b[len(b)-HashLength:]
-	}
-
-	copy(h[HashLength-len(b):], b)
-}
 
 func CreateAccount() Account {
 
@@ -69,42 +60,6 @@ func CreateAccount() Account {
 
 }
 
-type Signature struct {
-	r *big.Int
-	s *big.Int
-	v int
-} 
-
-func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) Transaction {
-
-	var transaction Transaction
-	transaction.From = account.PublicKey
-	transaction.Recipient = to
-	transaction.Amount = amount
-	//store unix time in the transaction
-	transaction.TimeStamp = time.Now()
-	//generate a random number for the transaction
-	transaction.Nonce = _rand.Intn(math.MaxInt64)
-	//generate a transaction hash
-	hasher := sha3.New256()
-	hasher.Write([]byte(transaction.Recipient))
-	hasher.Write([]byte(string(rune(transaction.Amount))))
-	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
-	hasher.Write([]byte(string(rune(transaction.Nonce))))
-	transaction.TransactionHash = hasher.Sum(nil)
-	//sign the transaction hash using the private key
-	r, s, err := ecdsa.Sign(rand.Reader, account, []byte(transaction.TransactionHash))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//the signature is a pair of numbers (r,s) which are the coordinates of the point on the curve
-	//the signature is encoded as a string
-	//v is the recovery id which is used to recover the public key from the signature
-	transaction.Signature = Signature{r: r, s: s, v: 0}	
-
-	return transaction
-}
 
 func VerifyTransaction(transaction Transaction) bool {
 
@@ -131,7 +86,7 @@ func VerifyTransaction(transaction Transaction) bool {
 	//later it will be derived from the signature
 	publicKey := transaction.From
 
-	sign := ecdsa.Verify(&publicKey, []byte(transaction.TransactionHash), transaction.Signature.r, transaction.Signature.s)
+	sign := ecdsa.Verify(&publicKey, []byte(transaction.TransactionHash), transaction.Signature.R, transaction.Signature.S)
 
 	return sign
 }

@@ -2,7 +2,7 @@ package blockchain
 
 import (
 	"crypto/ecdsa"
-
+	"math/big"
 	"time"
 	"encoding/hex"
 )
@@ -16,6 +16,12 @@ type Transaction struct {
 	Nonce           int
 	Signature       Signature
 }
+
+type Signature struct {
+	R *big.Int
+	S *big.Int
+	V int
+} 
 
 type Block struct {
 	PreviousBlockHash string
@@ -49,4 +55,13 @@ func (a *Address) SetBytes(b []byte) {
 		b = b[len(b)-AddressLength:]
 	}
 	copy(a[AddressLength-len(b):], b)
+}
+
+//trims the hash to 32 bytes
+func (h *Hash) SetBytes(b []byte) {
+	if len(b) > len(h) {
+		b = b[len(b)-HashLength:]
+	}
+
+	copy(h[HashLength-len(b):], b)
 }
