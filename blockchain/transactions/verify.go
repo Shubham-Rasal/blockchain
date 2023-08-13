@@ -19,6 +19,7 @@ func VerifyTransaction(transaction blockchain.Transaction) bool {
 	hasher.Write([]byte(string(rune(transaction.Amount))))
 	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
 	hasher.Write([]byte(string(rune(transaction.Nonce))))
+	// hasher.Write([]byte(string(rune(transaction.Nonce))))
 
 	hash := hasher.Sum(nil)
 
@@ -34,6 +35,8 @@ func VerifyTransaction(transaction blockchain.Transaction) bool {
 	publicKey := transaction.From
 
 	sign := ecdsa.Verify(&publicKey, []byte(transaction.TransactionHash), transaction.Signature.R, transaction.Signature.S)
+
+
 
 	return sign
 }

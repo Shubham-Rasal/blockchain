@@ -29,14 +29,17 @@ func main() {
 
 
 	account := blockchain.CreateAccount()
+	a2 := blockchain.CreateAccount()
 	// TidyPrint(account)
 
 	transaction := transactions.CreateTransaction(account.PrivateKey, "0x123", 100)
 	fmt.Println(transaction.Signature)
 
+	t2 := transactions.CreateTransaction(a2.PrivateKey, "0x12343", 100)
+
 	//verify the transaction
 
-	res := transactions.VerifyTransaction(transaction)
+	res := transactions.VerifyTransaction(t2)
 
 	fmt.Print(res)
 
