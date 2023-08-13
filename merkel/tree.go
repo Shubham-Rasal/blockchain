@@ -1,6 +1,8 @@
 package merkel
 
 import (
+	"fmt"
+
 	"golang.org/x/crypto/sha3"
 )
 
@@ -11,7 +13,7 @@ type MerkelTree struct {
 type MerkelNode struct {
 	Left  *MerkelNode
 	Right *MerkelNode
-	Data  []byte
+	Data  [32]byte
 }
 
 func NewMerkelNode(left, right *MerkelNode, data []byte) *MerkelNode {
@@ -19,11 +21,11 @@ func NewMerkelNode(left, right *MerkelNode, data []byte) *MerkelNode {
 
 	if left == nil && right == nil {
 		hash := sha3.Sum256(data)
-		mNode.Data = hash[:]
+		mNode.Data = hash
 	} else {
-		prevHashes := append(left.Data, right.Data...)
+		prevHashes := append(left.Data[:], right.Data[:]...)
 		hash := sha3.Sum256(prevHashes)
-		mNode.Data = hash[:]
+		mNode.Data = hash
 	}
 
 	mNode.Left = left
@@ -41,6 +43,7 @@ func NewMerkelTree(data [][]byte) *MerkelTree {
 
 	for _, d := range data {
 		node := NewMerkelNode(nil, nil, d)
+		fmt.Printf("%d \n", node.Data)
 		nodes = append(nodes, *node)
 	}
 
