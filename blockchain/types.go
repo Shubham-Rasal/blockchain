@@ -10,7 +10,7 @@ import (
 type Transaction struct {
 	TransactionHash []byte
 	From            ecdsa.PublicKey
-	Recipient       string
+	Recipient       ecdsa.PublicKey
 	Amount          int
 	TimeStamp       time.Time
 	Nonce           int

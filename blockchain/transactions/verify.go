@@ -15,7 +15,7 @@ func VerifyTransaction(transaction blockchain.Transaction) bool {
 	//the public key is derived from the signature using the recovery id
 	//the recovery id is used to determine the sign of the public key
 	hasher := sha3.New256()
-	hasher.Write([]byte(transaction.Recipient))
+	hasher.Write([]byte(string(rune(transaction.From.X.Int64()))))
 	hasher.Write([]byte(string(rune(transaction.Amount))))
 	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
 	hasher.Write([]byte(string(rune(transaction.Nonce))))
@@ -35,8 +35,6 @@ func VerifyTransaction(transaction blockchain.Transaction) bool {
 	publicKey := transaction.From
 
 	sign := ecdsa.Verify(&publicKey, []byte(transaction.TransactionHash), transaction.Signature.R, transaction.Signature.S)
-
-
 
 	return sign
 }

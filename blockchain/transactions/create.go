@@ -13,12 +13,12 @@ import (
 )
 
 
-func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) blockchain.Transaction {
+func CreateTransaction(account *ecdsa.PrivateKey, to ecdsa.PublicKey , amount int) blockchain.Transaction {
 
 
 	var transaction blockchain.Transaction
 	transaction.From = account.PublicKey
-	transaction.Recipient = to
+	transaction.Recipient = to 
 	transaction.Amount = amount
 	//store unix time in the transaction
 	transaction.TimeStamp = time.Now()
@@ -26,7 +26,7 @@ func CreateTransaction(account *ecdsa.PrivateKey, to string, amount int) blockch
 	transaction.Nonce = _rand.Intn(math.MaxInt64)
 	//generate a transaction hash
 	hasher := sha3.New256()
-	hasher.Write([]byte(transaction.Recipient))
+	hasher.Write([]byte(string(rune(transaction.From.X.Int64()))))
 	hasher.Write([]byte(string(rune(transaction.Amount))))
 	hasher.Write([]byte(string(rune(transaction.TimeStamp.Unix()))))
 	hasher.Write([]byte(string(rune(transaction.Nonce))))

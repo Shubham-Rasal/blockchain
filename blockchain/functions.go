@@ -54,8 +54,7 @@ func CreateAccount() Account {
 	hash := hasher.Sum(nil)
 	//take the last 20 bytes of the hash
 	account.Address.SetBytes(hash)
-	fmt.Println(string(account.Address.Hex()))
-
+	// fmt.Println(string(account.Address.Hex()))
 	return account
 
 }
