@@ -38,7 +38,7 @@ func Receive() {
 	)
 	failOnError(err, "Failed to register a consumer")
 
-	var forever chan struct{}
+	// var forever chan struct{}
 
 	go func() {
 		for d := range msgs {
@@ -49,5 +49,5 @@ func Receive() {
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	
 	// this is to keep the main thread alive as the go routine above is running in the background
-	<-forever
+	// <-forever
 }
