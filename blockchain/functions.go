@@ -60,10 +60,6 @@ func CreateAccount() Account {
 }
 
 
-
-
-
-
 func HashBlock(block Block) string {
 	//hash the block using the sha3-256 algorithm
 	hasher := sha3.New256()

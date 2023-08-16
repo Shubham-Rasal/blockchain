@@ -9,16 +9,17 @@ import (
 	_rand "math/rand"
 	"math"
 	"github.com/Shubham-Rasal/blockchain/blockchain"	
+
 	
 )
 
 
-func CreateTransaction(account *ecdsa.PrivateKey, to ecdsa.PublicKey , amount int) blockchain.Transaction {
+func CreateTransaction(account blockchain.Account, to blockchain.Account, amount int) blockchain.Transaction {
 
 
 	var transaction blockchain.Transaction
 	transaction.From = account.PublicKey
-	transaction.Recipient = to 
+	transaction.Recipient = to.PublicKey
 	transaction.Amount = amount
 	//store unix time in the transaction
 	transaction.TimeStamp = time.Now()
@@ -32,7 +33,7 @@ func CreateTransaction(account *ecdsa.PrivateKey, to ecdsa.PublicKey , amount in
 	hasher.Write([]byte(string(rune(transaction.Nonce))))
 	transaction.TransactionHash = hasher.Sum(nil)
 	//sign the transaction hash using the private key
-	r, s, err := ecdsa.Sign(rand.Reader, account, []byte(transaction.TransactionHash))
+	r, s, err := ecdsa.Sign(rand.Reader, account.PrivateKey, []byte(transaction.TransactionHash))
 	if err != nil {
 		fmt.Println(err)
 	}

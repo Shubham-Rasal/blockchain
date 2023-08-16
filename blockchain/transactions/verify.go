@@ -36,6 +36,8 @@ func VerifyTransaction(transaction blockchain.Transaction) bool {
 
 	sign := ecdsa.Verify(&publicKey, []byte(transaction.TransactionHash), transaction.Signature.R, transaction.Signature.S)
 
+	
+
 	return sign
 }
 	

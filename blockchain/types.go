@@ -2,9 +2,10 @@ package blockchain
 
 import (
 	"crypto/ecdsa"
+	"encoding/hex"
+	"fmt"
 	"math/big"
 	"time"
-	"encoding/hex"
 )
 
 type Transaction struct {
@@ -64,4 +65,19 @@ func (h *Hash) SetBytes(b []byte) {
 	}
 
 	copy(h[HashLength-len(b):], b)
+}
+
+
+func (t *Transaction) Transfer(a *Account , b *Account){
+	
+	amountToTransfer := t.Amount
+
+	if a.Balance < amountToTransfer {
+		fmt.Println("Insufficient Balance")
+		return
+	}
+
+	a.Balance -= amountToTransfer
+	b.Balance += amountToTransfer
+	
 }
