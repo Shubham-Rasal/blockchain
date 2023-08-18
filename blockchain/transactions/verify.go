@@ -5,6 +5,7 @@ import (
 	"golang.org/x/crypto/sha3"
 	"encoding/hex"
 	"github.com/Shubham-Rasal/blockchain/blockchain"
+	"log"
 )
 
 
@@ -36,7 +37,7 @@ func VerifyTransaction(transaction blockchain.Transaction) bool {
 
 	sign := ecdsa.Verify(&publicKey, []byte(transaction.TransactionHash), transaction.Signature.R, transaction.Signature.S)
 
-	
+	log.Printf("Transaction Signature: %t\n", sign)
 
 	return sign
 }

@@ -4,13 +4,13 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"fmt"
-	"golang.org/x/crypto/sha3"
-	"time"
-	_rand "math/rand"
+	"log"
 	"math"
-	"github.com/Shubham-Rasal/blockchain/blockchain"	
+	_rand "math/rand"
+	"time"
 
-	
+	"github.com/Shubham-Rasal/blockchain/blockchain"
+	"golang.org/x/crypto/sha3"
 )
 
 
@@ -46,6 +46,8 @@ func CreateTransaction(account blockchain.Account, to blockchain.Account, amount
 		S: s,
 		V: 0,
 	}
+
+	log.Printf("Transaction Hash: %x\n", transaction.TransactionHash)
 
 	return transaction
 }

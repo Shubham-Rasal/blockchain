@@ -20,12 +20,12 @@ const (
 )
 
 
-func CreateAccount() Account {
+func CreateAccount(initialBalance int) (Account , error) {
 
 	// cli.Parse()
 
 	var account Account
-	account.Balance = 0
+	account.Balance = initialBalance
 
 	//eliptic.P256() returns a curve which implements P-256 (see FIPS 186-3, section D.2.3)
 	//rand.Reader is a global, shared instance of a cryptographically strong pseudo-random generator.
@@ -37,6 +37,7 @@ func CreateAccount() Account {
 	PrivateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
 		fmt.Println(err)
+		return account , err
 	}
 
 	account.PrivateKey = PrivateKey
@@ -55,7 +56,7 @@ func CreateAccount() Account {
 	//take the last 20 bytes of the hash
 	account.Address.SetBytes(hash)
 	// fmt.Println(string(account.Address.Hex()))
-	return account
+	return account , nil
 
 }
 

@@ -28,8 +28,8 @@ func TidyPrint(data interface{}) {
 func main() {
 
 
-	account := blockchain.CreateAccount()
-	a2 := blockchain.CreateAccount()
+	account , _ := blockchain.CreateAccount(89)
+	a2, _ := blockchain.CreateAccount(90)
 	a2.Balance = 1000
 	// TidyPrint(a2)
 

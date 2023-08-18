@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
+	"log"
 	"math/big"
 	"time"
 )
@@ -79,5 +80,9 @@ func (t *Transaction) Transfer(a *Account , b *Account){
 
 	a.Balance -= amountToTransfer
 	b.Balance += amountToTransfer
+
+	log.Printf("Transferred %d from %x to %x\n", amountToTransfer, a.Address.Hex(), b.Address.Hex())
+	log.Printf("New Balance of %x: %d\n", a.Address.Hex(), a.Balance)
+	log.Printf("New Balance of %x: %d\n", b.Address.Hex(), b.Balance)
 	
 }
