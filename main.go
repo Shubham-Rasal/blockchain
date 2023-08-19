@@ -7,9 +7,8 @@ import (
 	// "net/http"
 	// "time"
 	// "github.com/gofrs/uuid"
-	// blockchain "github.com/Shubham-Rasal/blockchain"
-	"github.com/Shubham-Rasal/blockchain/blockchain"
-	"github.com/Shubham-Rasal/blockchain/blockchain/transactions"
+	// "github.com/Shubham-Rasal/blockchain/blockchain"
+	// "github.com/Shubham-Rasal/blockchain/blockchain/transactions"
 	// "github.com/Shubham-Rasal/blockchain/merkel"
 	// rabbitmq "github.com/Shubham-Rasal/blockchain/rabbitmq"
 	// "github.com/Shubham-Rasal/cmd"
@@ -23,29 +22,28 @@ func TidyPrint(data interface{}) {
 	fmt.Println(string(res))
 }
 
+func modify(ptr *int) {
+	fmt.Printf("%p\n", ptr)
+	*ptr = 20
+}
 
 
 func main() {
 
 
-	account , _ := blockchain.CreateAccount(89)
-	a2, _ := blockchain.CreateAccount(90)
-	a2.Balance = 1000
-	// TidyPrint(a2)
+	var arr []int
 
-	// transaction := transactions.CreateTransaction(account, a2, 100)
-	// fmt.Println(transaction.Signature)
+	arr = append(arr, 1, 2, 3, 4, 5)
 
-	t2 := transactions.CreateTransaction(a2, account, 20)
+	fmt.Printf("%p\n", &arr[2])
+	
+	ptr := &arr[2]
 
-	//verify the transaction
+	modify(ptr)
 
-	transactions.VerifyTransaction(t2)
-
-	t2.Transfer(&a2, &account)
-
-	fmt.Println(a2.Balance)
-	fmt.Println(account.Balance)
+	fmt.Println(arr)
 
  
 }
+
+

@@ -14,7 +14,7 @@ import (
 )
 
 
-func CreateTransaction(account blockchain.Account, to blockchain.Account, amount int) blockchain.Transaction {
+func CreateTransaction(account *blockchain.Account, to *blockchain.Account, amount int) blockchain.Transaction {
 
 
 	var transaction blockchain.Transaction
@@ -49,5 +49,19 @@ func CreateTransaction(account blockchain.Account, to blockchain.Account, amount
 
 	log.Printf("Transaction Hash: %x\n", transaction.TransactionHash)
 
+	amountToTransfer := amount
+
+	if account.Balance < amountToTransfer {
+		fmt.Println("Insufficient Balance")
+		return transaction
+	}
+
+	account.Balance -= amountToTransfer
+	to.Balance += amountToTransfer
+
+	log.Printf("Transferred %d from %s to %s\n", amountToTransfer, string(account.Address.Hex()), string(to.Address.Hex()))
+
 	return transaction
 }
+
+
